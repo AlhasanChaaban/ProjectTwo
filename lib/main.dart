@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Project Two',
       theme: ThemeData(
-        primarySwatch: Colors.grey ,
+        primarySwatch: Colors.amber,
         visualDensity: VisualDensity.adaptivePlatformDensity,
         textTheme: GoogleFonts.rubikTextTheme(
         Theme.of(context).textTheme,
