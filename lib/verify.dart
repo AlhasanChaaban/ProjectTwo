@@ -45,7 +45,7 @@ class _VerifyPageState extends State<VerifyPage> {
     if (_passwordController.text == adminPassword) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => AdminPage()),
+        MaterialPageRoute(builder: (context) => AddQuestion()),
       );
     } else {
       showDialog(

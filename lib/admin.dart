@@ -1,97 +1,95 @@
+import 'dart:convert' as convert;
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
-class AdminPage extends StatefulWidget {
-  const AdminPage({Key? key}) : super(key: key);
+const String _baseURL = 'quizquest.000webhostapp.com';
+
+class AddQuestion extends StatefulWidget {
+  const AddQuestion({super.key});
 
   @override
-  State<AdminPage> createState() => _AdminPageState();
+  _AddQuestionState createState() => _AddQuestionState();
 }
 
-class _AdminPageState extends State<AdminPage> {
-  final TextEditingController _questionController = TextEditingController();
-  final TextEditingController _answer1Controller = TextEditingController();
-  final TextEditingController _answer2Controller = TextEditingController();
-  final TextEditingController _correctAnswerController = TextEditingController();
+class _AddQuestionState extends State<AddQuestion> {
+  TextEditingController questionController = TextEditingController();
+  TextEditingController answer1Controller = TextEditingController();
+  TextEditingController answer2Controller = TextEditingController();
+  TextEditingController correctAnswerController = TextEditingController();
+
+  Future<void> insertQuestion() async {
+    final url = Uri.https(_baseURL, 'insert_question.php');
+    final response = await http.post(
+      url,
+      body: {
+        'question': questionController.text,
+        'answer1': answer1Controller.text,
+        'answer2': answer2Controller.text,
+        'correct_answer': correctAnswerController.text,
+      },
+    );
+    if (response.statusCode == 200) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Question inserted successfully'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Failed to insert question'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    var screenSize = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Admin Page'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextField(
-              controller: _questionController,
-              decoration: const InputDecoration(
-                labelText: 'Question',
-              ),
-            ),
-            const SizedBox(height: 20),
-            TextField(
-              controller: _answer1Controller,
-              decoration: const InputDecoration(
-                labelText: 'Answer 1',
-              ),
-            ),
-            const SizedBox(height: 20),
-            TextField(
-              controller: _answer2Controller,
-              decoration: const InputDecoration(
-                labelText: 'Answer 2',
-              ),
-            ),
-            const SizedBox(height: 20),
-            TextField(
-              controller: _correctAnswerController,
-              decoration: const InputDecoration(
-                labelText: 'Correct Answer',
-              ),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                _insertQuestion();
-              },
-              child: const Text('Insert Question'),
-            ),
-          ],
+        appBar: AppBar(
+          title: const Text('Admin App'),
         ),
+        body: Padding(
+        padding: const EdgeInsets.all(16.0),
+    child: Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+    TextField(
+    controller: questionController,
+    decoration: const InputDecoration(labelText: 'Question'),
+    ),
+      const SizedBox(height: 10),
+      TextField(
+        controller: answer1Controller,
+        decoration: const InputDecoration(labelText: 'Answer 1'),
       ),
-    );
-  }
-
-  void _insertQuestion() {
-    // Retrieve values from text controllers
-    String question = _questionController.text;
-    String answer1 = _answer1Controller.text;
-    String answer2 = _answer2Controller.text;
-    String correctAnswer = _correctAnswerController.text;
-
-    _questionController.clear();
-    _answer1Controller.clear();
-    _answer2Controller.clear();
-    _correctAnswerController.clear();
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Question Inserted'),
-          content: const Text('The question has been successfully inserted.'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('OK'),
-            ),
-          ],
+      const SizedBox(height: 10),
+      TextField(
+        controller: answer2Controller,
+        decoration: const InputDecoration(labelText: 'Answer 2'),
+      ),
+      const SizedBox(height: 10),
+      TextField(
+        controller: correctAnswerController,
+        decoration: const InputDecoration(labelText: 'Correct Answer'),
+      ),
+      const SizedBox(height: 20),
+      ElevatedButton(
+        onPressed: insertQuestion,
+        style: ElevatedButton.styleFrom(
+          minimumSize: Size(screenSize.width*0.2, 40),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15)
+          ),
+        ),
+        child: const Text('Insert Question'),
+      ),
+    ],
+    ),
+        ),
         );
-      },
-    );
-  }
+    }
 }
