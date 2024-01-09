@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quizquest/gamescreen.dart';
 import 'verify.dart';
 
 class MyHomePage extends StatelessWidget {
@@ -44,6 +45,10 @@ class MyHomePage extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: () {
                     print('Starting Game');
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Quiz()),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
